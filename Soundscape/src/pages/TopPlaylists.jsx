@@ -164,7 +164,7 @@ const TopPlaylists = () => {
                                 left: `${(currentTime / duration) * 100 || 0}%`,
                                 transform: 'translateX(-50%)',
                               }}
-                            ></div>
+                            ></div> 
                           </div>
 
                           <span className="text-xs w-10 text-left">{formatTime(duration)}</span>
