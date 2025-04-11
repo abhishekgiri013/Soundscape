@@ -27,7 +27,10 @@ const TopPlaylists = () => {
               sounds: []
             };
           }
-          grouped[categoryName].sounds.push(sound.audioUrl);
+          grouped[categoryName].sounds.push({
+            url: sound.audioUrl,
+            name: sound.name || `Track ${grouped[categoryName].sounds.length + 1}`
+          });
         });
         setGroupedSounds(grouped);
         setLoading(false);
@@ -82,22 +85,6 @@ const TopPlaylists = () => {
     return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#13033a] text-white">
-        <p className="text-lg animate-pulse">Loading playlists...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#13033a] text-white">
-        <p className="text-lg text-red-400">{error}</p>
-      </div>
-    );
-  }
-
   return (
     <div
       className="pt-24 px-6 pb-12 min-h-screen text-white"
@@ -108,7 +95,6 @@ const TopPlaylists = () => {
           linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(82, 34, 88, 0.5)),
           url('/Topback.png')
         `,
-        backgroundSize: 'cover',
         backgroundPosition: 'top',
         backgroundRepeat: 'no-repeat',
       }}
@@ -124,7 +110,7 @@ const TopPlaylists = () => {
           <div className="flex-1">
             <h2 className="text-2xl sm:text-3xl font-bold mb-4">{categoryName}</h2>
             <div className="flex gap-10 overflow-x-auto scrollbar-thin scrollbar-thumb-purple-700 scrollbar-track-transparent pr-2 h-25">
-              {sounds.map((url, idx) => {
+              {sounds.map(({ url, name }, idx) => {
                 const isPlaying = currentPlaying === url;
                 return (
                   <div
@@ -145,23 +131,21 @@ const TopPlaylists = () => {
                     />
 
                     {!isPlaying ? (
-                      <div className="flex  items-center justify-center text-center gap-2">
+                      <div className="flex items-center justify-center text-center gap-2">
                         <button onClick={() => togglePlay(url)}>
-                          
                           <div className='bg-[#888484] w-10 h-10 rounded-full flex items-center justify-center text-lg'><FaPlay className='ml-0.5'/></div>
-                            
                         </button>
-                        <span className="text-lg font-semibold">Track {idx + 1}</span>
+                        <span className="text-lg font-semibold">{name}</span>
                       </div>
                     ) : (
                       <>
                         <span className="text-xs font-bold mt-2 mr-28 block">
-                          Track {idx + 1}
+                          {name}
                         </span>
 
                         <div className="flex items-center gap-3 w-full mb-5">
-                          <button onClick={() => togglePlay(url)} className="text-[#fffcfc] ">
-                          <div className='bg-[#888484] w-10 h-10 rounded-full flex items-center justify-center text-2xl'><MdOutlinePause/></div>
+                          <button onClick={() => togglePlay(url)} className="text-[#fffcfc]">
+                            <div className='bg-[#888484] w-10 h-10 rounded-full flex items-center justify-center text-2xl'><MdOutlinePause/></div>
                           </button>
 
                           <span className="text-xs w-10 text-right">{formatTime(currentTime)}</span>
